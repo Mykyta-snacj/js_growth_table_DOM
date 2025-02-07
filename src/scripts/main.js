@@ -9,14 +9,10 @@ let actualRowsLength = field.querySelector('tbody').children.length;
 let actualColumnsLength = field.querySelector('tr').children.length;
 
 container.addEventListener('click', function (e) {
-  const row = field.querySelector('tr');
+  const row = tbody.lastElementChild;
 
   if (e.target.closest('.append-row')) {
-    const newRow = document.createElement('tr');
-
-    for (let i = 0; i < actualColumnsLength; i++) {
-      newRow.append(row.children[i].cloneNode());
-    }
+    const newRow = row.cloneNode(true);
 
     if (actualRowsLength < 10) {
       tbody.append(newRow);
@@ -32,13 +28,15 @@ container.addEventListener('click', function (e) {
   }
 
   if (e.target.closest('.append-column')) {
-    const newColumn = document.createElement('td');
-
     if (actualColumnsLength < 10) {
       actualColumnsLength += 1;
 
       for (let i = 0; i < actualRowsLength; i++) {
-        tbody.children[i].append(newColumn.cloneNode());
+        const currentRow = tbody.children[i];
+        const lastColumn = currentRow.children[currentRow.children.length - 1];
+        const newColumn = lastColumn.cloneNode(true);
+
+        currentRow.append(newColumn);
       }
     }
   }
@@ -48,7 +46,9 @@ container.addEventListener('click', function (e) {
       actualColumnsLength -= 1;
 
       for (let i = 0; i < actualRowsLength; i++) {
-        tbody.children[i].querySelector('td').remove();
+        const currentRow = tbody.children[i];
+
+        currentRow.children[currentRow.children.length - 1].remove();
       }
     }
   }
